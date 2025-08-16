@@ -98,14 +98,25 @@ export function AppSidebar({
               <SidebarMenuItem key={page.id}>
                  <SidebarMenuButton
                   isActive={activePageId === page.id}
-                  onClick={() => onSelectPage(page.id)}
+                  onClick={() => {
+                    if (editingPageId !== page.id) {
+                      onSelectPage(page.id);
+                    }
+                  }}
                   tooltip={{
                     children: page.name,
                     side: 'right',
                   }}
                   className="flex items-center justify-between"
                 >
-                  <div className="flex items-center gap-2">
+                  <div 
+                    className="flex items-center gap-2"
+                    onClick={(e) => {
+                      if (editingPageId === page.id) {
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
                     <LayoutList />
                     {editingPageId === page.id ? (
                       <EditableText
@@ -127,7 +138,7 @@ export function AppSidebar({
                     </SidebarMenuAction>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start" side="right">
-                    <DropdownMenuItem onSelect={() => setEditingPageId(page.id)}>
+                    <DropdownMenuItem onSelect={(e) => { e.preventDefault(); setEditingPageId(page.id); }}>
                       <Pencil className="mr-2" />
                       <span>Rename</span>
                     </DropdownMenuItem>
