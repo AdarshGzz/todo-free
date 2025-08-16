@@ -9,10 +9,12 @@ interface EditableTextProps {
   initialValue: string;
   onSave: (value: string) => void;
   className?: string;
+  isEditingInitially?: boolean;
+  onCancel?: () => void;
 }
 
-export function EditableText({ initialValue, onSave, className }: EditableTextProps) {
-  const [isEditing, setIsEditing] = useState(false);
+export function EditableText({ initialValue, onSave, className, isEditingInitially = false, onCancel }: EditableTextProps) {
+  const [isEditing, setIsEditing] = useState(isEditingInitially);
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -42,12 +44,11 @@ export function EditableText({ initialValue, onSave, className }: EditableTextPr
     } else if (e.key === 'Escape') {
       setValue(initialValue);
       setIsEditing(false);
+      onCancel?.();
     }
   };
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-    // Check if the blur was caused by clicking outside the input
-    // and not by an action that should keep it open.
     // A small delay helps in case focus shifts to another element within the component.
     setTimeout(() => {
       if (document.activeElement !== inputRef.current) {

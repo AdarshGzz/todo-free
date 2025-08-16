@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { Page } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,12 +43,18 @@ export function Sidebar({
   onDeletePage,
 }: SidebarProps) {
   const [pageToDelete, setPageToDelete] = useState<string | null>(null);
+  const [editingPageId, setEditingPageId] = useState<string | null>(null);
 
   const handleDeleteConfirmation = () => {
     if (pageToDelete) {
       onDeletePage(pageToDelete);
       setPageToDelete(null);
     }
+  };
+
+  const handleSaveRename = (pageId: string, newName: string) => {
+    onRenamePage(pageId, newName);
+    setEditingPageId(null);
   };
 
   return (
@@ -80,11 +86,17 @@ export function Sidebar({
                 className="flex flex-1 items-center gap-2 p-2"
               >
                 <LayoutList className="h-4 w-4" />
-                <EditableText
-                  initialValue={page.name}
-                  onSave={(newName) => onRenamePage(page.id, newName)}
-                  className="w-full flex-1 cursor-pointer text-left"
-                />
+                {editingPageId === page.id ? (
+                    <EditableText
+                      initialValue={page.name}
+                      onSave={(newName) => handleSaveRename(page.id, newName)}
+                      className="w-full flex-1 text-left"
+                      isEditingInitially={true}
+                      onCancel={() => setEditingPageId(null)}
+                    />
+                  ) : (
+                    <span className="w-full flex-1 text-left truncate">{page.name}</span>
+                  )}
               </button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -101,9 +113,7 @@ export function Sidebar({
                   <DropdownMenuItem
                     onSelect={(e) => {
                       e.preventDefault();
-                      // The EditableText component handles its own edit state on click.
-                      // We can simulate a click on the text itself if direct manipulation is needed,
-                      // but for now, the user can click the text to rename.
+                      setEditingPageId(page.id);
                     }}
                   >
                     <Edit className="mr-2 h-4 w-4" />
