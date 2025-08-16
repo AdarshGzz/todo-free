@@ -98,9 +98,11 @@ export function AppSidebar({
               <SidebarMenuItem key={page.id}>
                  <SidebarMenuButton
                   isActive={activePageId === page.id}
-                  onClick={() => {
+                  onClick={(e) => {
                     if (editingPageId !== page.id) {
                       onSelectPage(page.id);
+                    } else {
+                      e.preventDefault();
                     }
                   }}
                   tooltip={{
@@ -109,14 +111,7 @@ export function AppSidebar({
                   }}
                   className="flex items-center justify-between"
                 >
-                  <div 
-                    className="flex items-center gap-2"
-                    onClick={(e) => {
-                      if (editingPageId === page.id) {
-                        e.stopPropagation();
-                      }
-                    }}
-                  >
+                  <div className="flex items-center gap-2">
                     <LayoutList />
                     {editingPageId === page.id ? (
                       <EditableText
