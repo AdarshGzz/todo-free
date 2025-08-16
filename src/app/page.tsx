@@ -1,5 +1,5 @@
-import { FocusFlowApp } from '@/components/focus-flow-app';
+import { LandingPage } from '@/components/landing-page';
 
 export default function Home() {
-  return <FocusFlowApp />;
+  return <LandingPage />;
 }
