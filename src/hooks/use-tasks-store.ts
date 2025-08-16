@@ -10,17 +10,17 @@ const initialData: { pages: Page[]; activePageId: string | null } = {
       id: 'work',
       name: 'Work',
       tasks: [
-        { id: 'work-1', content: 'Finish project report', completed: false },
-        { id: 'work-2', content: 'Reply to client emails', completed: false },
-        { id: 'work-3', content: 'Prepare for team meeting', completed: true },
+        { id: 'work-1', content: '<p>Finish project report</p>', completed: false },
+        { id: 'work-2', content: '<p>Reply to client emails</p>', completed: false },
+        { id: 'work-3', content: '<p>Prepare for team meeting</p>', completed: true },
       ],
     },
     {
       id: 'personal',
       name: 'Personal',
       tasks: [
-        { id: 'personal-1', content: 'Go grocery shopping', completed: false },
-        { id: 'personal-2', content: 'Book flight tickets', completed: false },
+        { id: 'personal-1', content: '<p>Go grocery shopping</p>', completed: false },
+        { id: 'personal-2', content: '<p>Book flight tickets</p>', completed: false },
       ],
     },
   ],
@@ -104,7 +104,7 @@ export function useTasksStore() {
   const addTask = (pageId: string, content: string) => {
     const newTask: Task = {
       id: `task-${Date.now()}`,
-      content,
+      content: `<p>${content}</p>`, // Wrap new task content in a paragraph
       completed: false,
     };
     const page = pages.find((p) => p.id === pageId);
@@ -140,7 +140,7 @@ export function useTasksStore() {
     if (page) {
       const newTasks: Task[] = taskContents.map((content) => ({
         id: `task-${Date.now()}-${Math.random()}`,
-        content,
+        content: `<p>${content}</p>`, // Wrap generated content in paragraphs
         completed: false,
       }));
       updatePageTasks(pageId, [...page.tasks, ...newTasks]);
