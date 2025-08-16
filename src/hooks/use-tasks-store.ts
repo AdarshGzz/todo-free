@@ -85,6 +85,16 @@ export function useTasksStore() {
     );
   };
 
+  const deletePage = (pageId: string) => {
+    setPages((prev) => {
+      const newPages = prev.filter((p) => p.id !== pageId);
+      if (activePageId === pageId) {
+        setActivePageId(newPages.length > 0 ? newPages[0].id : null);
+      }
+      return newPages;
+    });
+  };
+
   const updatePageTasks = (pageId: string, newTasks: Task[]) => {
     setPages((prev) =>
       prev.map((p) => (p.id === pageId ? { ...p, tasks: newTasks } : p))
@@ -143,6 +153,7 @@ export function useTasksStore() {
     setActivePageId,
     addPage,
     renamePage,
+    deletePage,
     getActivePage,
     addTask,
     toggleTask,

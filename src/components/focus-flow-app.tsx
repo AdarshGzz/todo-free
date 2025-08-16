@@ -21,13 +21,14 @@ export function FocusFlowApp() {
     reorderTasks,
     addGeneratedTasks,
     renamePage,
+    deletePage,
   } = useTasksStore();
 
   const activePage = getActivePage();
 
   const handleAiTasksGenerated = (tasks: string[]) => {
     if (activePage) {
-      addGeneratedTasks(active.id, tasks);
+      addGeneratedTasks(activePage.id, tasks);
     }
   };
 
@@ -39,6 +40,7 @@ export function FocusFlowApp() {
         onSelectPage={setActivePageId}
         onAddPage={addPage}
         onRenamePage={renamePage}
+        onDeletePage={deletePage}
       />
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="flex flex-1 flex-col gap-8 overflow-y-auto p-4 md:p-8">
