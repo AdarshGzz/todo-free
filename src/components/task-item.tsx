@@ -65,8 +65,8 @@ export function TaskItem({ task, onToggle, onDelete, onUpdateContent }: TaskItem
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
       className={cn(
-        "group flex items-start gap-2 rounded-md bg-secondary p-2 transition-all duration-200 ease-in-out hover:bg-secondary/80 will-change-transform",
-        highlight && 'bg-primary/20'
+        "group flex items-start gap-2 rounded-md border border-secondary bg-secondary p-2 transition-all duration-200 ease-in-out hover:border-border hover:bg-secondary/80 will-change-transform",
+        highlight && 'bg-primary/20 border-primary/30'
       )}
     >
       <div 
