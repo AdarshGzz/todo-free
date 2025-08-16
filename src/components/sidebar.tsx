@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { Page } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
@@ -20,12 +20,24 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { Plus, LayoutList, MoreHorizontal, Trash2, Edit } from 'lucide-react';
+import { Plus, LayoutList, MoreHorizontal, Trash2, Edit, Pencil } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FocusFlowLogo } from '@/components/icons';
 import { EditableText } from './editable-text';
+import { 
+  Sidebar as RootSidebar, 
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuAction,
+  useSidebar
+} from '@/components/ui/sidebar';
+import { AnimatePresence, motion } from 'framer-motion';
 
-interface SidebarProps {
+interface AppSidebarProps {
   pages: Page[];
   activePageId: string | null;
   onSelectPage: (id: string) => void;
@@ -34,16 +46,17 @@ interface SidebarProps {
   onDeletePage: (id: string) => void;
 }
 
-export function Sidebar({
+export function AppSidebar({
   pages,
   activePageId,
   onSelectPage,
   onAddPage,
   onRenamePage,
   onDeletePage,
-}: SidebarProps) {
+}: AppSidebarProps) {
   const [pageToDelete, setPageToDelete] = useState<string | null>(null);
   const [editingPageId, setEditingPageId] = useState<string | null>(null);
+  const { state: sidebarState } = useSidebar();
 
   const handleDeleteConfirmation = () => {
     if (pageToDelete) {
@@ -59,90 +72,93 @@ export function Sidebar({
 
   return (
     <>
-      <aside className="flex w-64 flex-col border-r bg-card p-4">
-        <div className="mb-8 flex items-center gap-2">
-          <FocusFlowLogo className="h-8 w-8 text-primary" />
-          <h1 className="font-headline text-2xl font-bold text-foreground">
-            FocusFlow
-          </h1>
-        </div>
-
-        <nav className="flex-1 space-y-1">
-          <h2 className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Pages
-          </h2>
-          {pages.map((page) => (
-            <div
-              key={page.id}
-              className={cn(
-                'group flex items-center rounded-md text-sm transition-colors',
-                activePageId === page.id
-                  ? 'bg-secondary font-semibold'
-                  : 'hover:bg-secondary/80'
+      <RootSidebar collapsible="icon">
+        <SidebarHeader className='p-2'>
+          <div className="flex items-center gap-2 p-2">
+            <FocusFlowLogo className="h-7 w-7 text-primary" />
+             <AnimatePresence>
+              {sidebarState === 'expanded' && (
+                <motion.h1 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="font-headline text-2xl font-bold text-foreground"
+                >
+                  FocusFlow
+                </motion.h1>
               )}
-            >
-              <button
-                onClick={() => onSelectPage(page.id)}
-                className="flex flex-1 items-center gap-2 p-2"
-              >
-                <LayoutList className="h-4 w-4" />
-                {editingPageId === page.id ? (
-                    <EditableText
-                      initialValue={page.name}
-                      onSave={(newName) => handleSaveRename(page.id, newName)}
-                      className="w-full flex-1 text-left"
-                      isEditingInitially={true}
-                      onCancel={() => setEditingPageId(null)}
-                    />
-                  ) : (
-                    <span className="w-full flex-1 text-left truncate">{page.name}</span>
-                  )}
-              </button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100"
-                  >
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Page options</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      setEditingPageId(page.id);
-                    }}
-                  >
-                    <Edit className="mr-2 h-4 w-4" />
-                    <span>Rename</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onSelect={() => setPageToDelete(page.id)}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    <span>Delete</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          ))}
-        </nav>
+            </AnimatePresence>
+          </div>
+        </SidebarHeader>
 
-        <div className="mt-4">
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={onAddPage}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            New Page
-          </Button>
-        </div>
-      </aside>
+        <SidebarContent className='p-2'>
+          <SidebarMenu>
+            {pages.map((page) => (
+              <SidebarMenuItem key={page.id}>
+                 <SidebarMenuButton
+                  isActive={activePageId === page.id}
+                  onClick={() => onSelectPage(page.id)}
+                  tooltip={{
+                    children: page.name,
+                    side: 'right',
+                  }}
+                  className="flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-2">
+                    <LayoutList />
+                    {editingPageId === page.id ? (
+                      <EditableText
+                        initialValue={page.name}
+                        onSave={(newName) => handleSaveRename(page.id, newName)}
+                        isEditingInitially={true}
+                        onCancel={() => setEditingPageId(null)}
+                      />
+                    ) : (
+                      <span>{page.name}</span>
+                    )}
+                  </div>
+                </SidebarMenuButton>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuAction showOnHover>
+                       <MoreHorizontal />
+                    </SidebarMenuAction>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" side="right">
+                    <DropdownMenuItem onSelect={() => setEditingPageId(page.id)}>
+                      <Pencil className="mr-2" />
+                      <span>Rename</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => setPageToDelete(page.id)}
+                      className="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 className="mr-2" />
+                      <span>Delete</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarContent>
+
+        <SidebarFooter className='p-2'>
+           <SidebarMenuButton
+              onClick={onAddPage}
+              tooltip={{
+                children: 'New Page',
+                side: 'right',
+              }}
+           >
+            <Plus />
+            <span>New Page</span>
+          </SidebarMenuButton>
+        </SidebarFooter>
+      </RootSidebar>
 
       <AlertDialog open={!!pageToDelete} onOpenChange={(open) => !open && setPageToDelete(null)}>
         <AlertDialogContent>

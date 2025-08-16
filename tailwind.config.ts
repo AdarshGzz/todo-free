@@ -1,4 +1,5 @@
 import type {Config} from 'tailwindcss';
+import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   darkMode: ['class'],
@@ -17,8 +18,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Space Grotesk', 'sans-serif'],
+        body: ['Inter', 'sans-serif', ...fontFamily.sans],
+        headline: ['Space Grotesk', 'sans-serif', ...fontFamily.sans],
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -62,14 +63,12 @@ export default {
           '5': 'hsl(var(--chart-5))',
         },
         sidebar: {
-          DEFAULT: 'hsl(var(--sidebar-background))',
-          foreground: 'hsl(var(--sidebar-foreground))',
-          primary: 'hsl(var(--sidebar-primary))',
-          'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-          accent: 'hsl(var(--sidebar-accent))',
-          'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-          border: 'hsl(var(--sidebar-border))',
-          ring: 'hsl(var(--sidebar-ring))',
+          DEFAULT: 'hsl(var(--card))',
+          foreground: 'hsl(var(--card-foreground))',
+          border: 'hsl(var(--border))',
+          ring: 'hsl(var(--ring))',
+          accent: 'hsl(var(--secondary))',
+          'accent-foreground': 'hsl(var(--secondary-foreground))',
         },
       },
       borderRadius: {

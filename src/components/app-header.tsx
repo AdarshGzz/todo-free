@@ -1,9 +1,13 @@
+
+import { cn } from '@/lib/utils';
 import React from 'react';
 
-export function AppHeader() {
+interface AppHeaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+export function AppHeader({ children, className }: AppHeaderProps) {
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 md:px-8">
-      {/* Header content can go here, e.g., breadcrumbs, user menu */}
+    <header className={cn("flex h-14 shrink-0 items-center gap-4 border-b bg-background px-4 md:px-6", className)}>
+      {children}
     </header>
   );
 }
