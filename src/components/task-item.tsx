@@ -27,10 +27,10 @@ export function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
       id={task.id}
       dragListener={false}
       dragControls={dragControls}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2, ease: "circOut" }}
       className="group flex items-center gap-2 rounded-md bg-secondary p-2 transition-all duration-200 ease-in-out hover:bg-secondary/80 will-change-transform"
     >
       <div 
