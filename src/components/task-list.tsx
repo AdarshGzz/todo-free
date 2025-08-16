@@ -44,10 +44,10 @@ export function TaskList({
     <Card>
       <CardHeader>
         <CardTitle asChild>
-          <EditableText 
+           <EditableText 
             initialValue={page.name}
             onSave={onRenamePage}
-            className="font-headline text-3xl"
+            className="font-headline text-3xl font-semibold tracking-tight"
           />
         </CardTitle>
       </CardHeader>

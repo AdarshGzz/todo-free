@@ -11,9 +11,10 @@ interface EditableTextProps {
   className?: string;
   isEditingInitially?: boolean;
   onCancel?: () => void;
+  inputClassName?: string;
 }
 
-export function EditableText({ initialValue, onSave, className, isEditingInitially = false, onCancel }: EditableTextProps) {
+export function EditableText({ initialValue, onSave, className, isEditingInitially = false, onCancel, inputClassName }: EditableTextProps) {
   const [isEditing, setIsEditing] = useState(isEditingInitially);
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,8 +33,8 @@ export function EditableText({ initialValue, onSave, className, isEditingInitial
   const handleSave = () => {
     if (value.trim() && value.trim() !== initialValue) {
       onSave(value.trim());
-    } else {
-      setValue(initialValue);
+    } else if (!value.trim()) {
+        setValue(initialValue); // Revert if the input is empty
     }
     setIsEditing(false);
   };
@@ -49,13 +50,13 @@ export function EditableText({ initialValue, onSave, className, isEditingInitial
   };
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-    // A small delay helps in case focus shifts to another element within the component.
-    setTimeout(() => {
-      if (document.activeElement !== inputRef.current) {
-        handleSave();
-      }
-    }, 100);
+    handleSave();
   };
+  
+  const handleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.stopPropagation();
+    setIsEditing(true);
+  }
 
   if (isEditing) {
     return (
@@ -66,14 +67,14 @@ export function EditableText({ initialValue, onSave, className, isEditingInitial
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
-        className={cn("h-auto p-0 m-0 border-none focus-visible:ring-0 focus-visible:ring-offset-0", className)}
+        className={cn("h-auto p-0 m-0 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent", className, inputClassName)}
       />
     );
   }
 
   return (
     <span
-      onClick={() => setIsEditing(true)}
+      onClick={handleClick}
       className={cn("cursor-pointer hover:bg-secondary/80 rounded-md p-0", className)}
     >
       {value}
