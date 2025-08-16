@@ -50,6 +50,10 @@ export function EditableText({ initialValue, onSave, className, isEditingInitial
   };
 
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
+    // Check if the related target (where the focus is going) is part of the same component
+    if (e.relatedTarget && e.currentTarget.contains(e.relatedTarget as Node)) {
+        return;
+    }
     handleSave();
   };
   
@@ -67,7 +71,12 @@ export function EditableText({ initialValue, onSave, className, isEditingInitial
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={handleBlur}
-        className={cn("h-auto p-0 m-0 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent", className, inputClassName)}
+        className={cn(
+            "h-auto p-0 m-0 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent",
+            "text-3xl font-semibold tracking-tight", // Ensure consistency
+            className,
+            inputClassName
+        )}
       />
     );
   }
