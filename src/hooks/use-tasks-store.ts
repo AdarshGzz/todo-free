@@ -147,6 +147,16 @@ export function useTasksStore() {
     }
   };
 
+  const updateTaskContent = (pageId: string, taskId: string, newContent: string) => {
+    const page = pages.find((p) => p.id === pageId);
+    if (page) {
+      const newTasks = page.tasks.map((t) =>
+        t.id === taskId ? { ...t, content: newContent } : t
+      );
+      updatePageTasks(pageId, newTasks);
+    }
+  };
+
   return {
     pages,
     activePageId,
@@ -160,5 +170,6 @@ export function useTasksStore() {
     deleteTask,
     reorderTasks,
     addGeneratedTasks,
+    updateTaskContent,
   };
 }

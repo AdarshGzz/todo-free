@@ -7,6 +7,7 @@ import {ai} from '@/ai/genkit';
 import '@/ai/flows/summarize-daily-plan';
 import '@/ai/flows/auto-categorize-tasks';
 import '@/ai/flows/generate-tasks';
+import '@/ai/flows/rephrase-task';
 
 export const maxDuration = 120; // 2 minutes
 

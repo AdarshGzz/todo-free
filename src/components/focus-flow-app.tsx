@@ -1,7 +1,7 @@
 
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useTasksStore } from '@/hooks/use-tasks-store';
 import { AppSidebar } from '@/components/sidebar';
 import { TaskList } from '@/components/task-list';
@@ -9,6 +9,9 @@ import { AITaskGenerator } from '@/components/ai-task-generator';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppHeader } from '@/components/app-header';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Bot, Sparkles } from 'lucide-react';
 
 
 export function FocusFlowApp() {
@@ -25,14 +28,17 @@ export function FocusFlowApp() {
     addGeneratedTasks,
     renamePage,
     deletePage,
+    updateTaskContent,
   } = useTasksStore();
 
+  const [isAiGeneratorOpen, setIsAiGeneratorOpen] = useState(false);
   const activePage = getActivePage();
 
   const handleAiTasksGenerated = (tasks: string[]) => {
     if (activePage) {
       addGeneratedTasks(activePage.id, tasks);
     }
+    setIsAiGeneratorOpen(false); // Close the dialog after generating tasks
   };
 
   return (
@@ -52,18 +58,29 @@ export function FocusFlowApp() {
              <h2 className="font-headline text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               {activePage?.name || 'FocusFlow'}
             </h2>
+            <div className="ml-auto">
+              <Dialog open={isAiGeneratorOpen} onOpenChange={setIsAiGeneratorOpen}>
+                <DialogTrigger asChild>
+                   <Button variant="ghost" size="icon">
+                    <Sparkles className="h-5 w-5 text-primary" />
+                    <span className="sr-only">Open AI Task Generator</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <AITaskGenerator onTasksGenerated={handleAiTasksGenerated} disabled={!activePage} />
+                </DialogContent>
+              </Dialog>
+            </div>
           </AppHeader>
           <main className="flex flex-1 flex-col gap-8 overflow-y-auto p-4 md:p-8">
-            <AITaskGenerator onTasksGenerated={handleAiTasksGenerated} disabled={!activePage} />
-            
             <AnimatePresence mode="wait">
               {activePage ? (
                 <motion.div
                   key={activePage.id}
-                  initial={{ opacity: 0, y: 10 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.15 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
                   className="min-h-0"
                 >
                   <TaskList
@@ -75,6 +92,7 @@ export function FocusFlowApp() {
                       reorderTasks(activePage.id, reorderedTasks)
                     }
                     onRenamePage={(name) => renamePage(activePage.id, name)}
+                    onUpdateTaskContent={(taskId, newContent) => updateTaskContent(activePage.id, taskId, newContent)}
                   />
                 </motion.div>
               ) : (

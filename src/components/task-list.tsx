@@ -18,6 +18,7 @@ interface TaskListProps {
   onDeleteTask: (taskId: string) => void;
   onReorderTasks: (reorderedTasks: Task[]) => void;
   onRenamePage: (name: string) => void;
+  onUpdateTaskContent: (taskId: string, newContent: string) => void;
 }
 
 export function TaskList({
@@ -27,6 +28,7 @@ export function TaskList({
   onDeleteTask,
   onReorderTasks,
   onRenamePage,
+  onUpdateTaskContent,
 }: TaskListProps) {
   const [newTaskContent, setNewTaskContent] = useState('');
 
@@ -62,6 +64,7 @@ export function TaskList({
               task={task}
               onToggle={onToggleTask}
               onDelete={onDeleteTask}
+              onUpdateContent={onUpdateTaskContent}
             />
           ))}
         </Reorder.Group>
