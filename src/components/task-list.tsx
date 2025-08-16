@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, FormEvent } from 'react';
@@ -8,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Reorder } from 'framer-motion';
+import { EditableText } from './editable-text';
 
 interface TaskListProps {
   page: Page;
@@ -15,6 +17,7 @@ interface TaskListProps {
   onToggleTask: (taskId: string) => void;
   onDeleteTask: (taskId: string) => void;
   onReorderTasks: (reorderedTasks: Task[]) => void;
+  onRenamePage: (name: string) => void;
 }
 
 export function TaskList({
@@ -23,6 +26,7 @@ export function TaskList({
   onToggleTask,
   onDeleteTask,
   onReorderTasks,
+  onRenamePage,
 }: TaskListProps) {
   const [newTaskContent, setNewTaskContent] = useState('');
 
@@ -37,7 +41,13 @@ export function TaskList({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline text-3xl">{page.name}</CardTitle>
+        <CardTitle asChild>
+          <EditableText 
+            initialValue={page.name}
+            onSave={onRenamePage}
+            className="font-headline text-3xl"
+          />
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Reorder.Group

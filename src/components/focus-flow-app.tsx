@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -19,13 +20,14 @@ export function FocusFlowApp() {
     deleteTask,
     reorderTasks,
     addGeneratedTasks,
+    renamePage,
   } = useTasksStore();
 
   const activePage = getActivePage();
 
   const handleAiTasksGenerated = (tasks: string[]) => {
     if (activePage) {
-      addGeneratedTasks(activePage.id, tasks);
+      addGeneratedTasks(active.id, tasks);
     }
   };
 
@@ -36,6 +38,7 @@ export function FocusFlowApp() {
         activePageId={activePageId}
         onSelectPage={setActivePageId}
         onAddPage={addPage}
+        onRenamePage={renamePage}
       />
       <main className="flex flex-1 flex-col overflow-hidden">
         <div className="flex flex-1 flex-col gap-8 overflow-y-auto p-4 md:p-8">
@@ -48,7 +51,7 @@ export function FocusFlowApp() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
                 className="min-h-0"
               >
                 <TaskList
@@ -59,6 +62,7 @@ export function FocusFlowApp() {
                   onReorderTasks={(reorderedTasks) =>
                     reorderTasks(activePage.id, reorderedTasks)
                   }
+                  onRenamePage={(name) => renamePage(activePage.id, name)}
                 />
               </motion.div>
             ) : (

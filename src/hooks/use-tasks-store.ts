@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -68,14 +69,20 @@ export function useTasksStore() {
     return pages.find((p) => p.id === activePageId) || null;
   }, [pages, activePageId]);
 
-  const addPage = (name: string) => {
+  const addPage = () => {
     const newPage: Page = {
       id: `page-${Date.now()}`,
-      name,
+      name: 'Untitled Page',
       tasks: [],
     };
     setPages((prev) => [...prev, newPage]);
     setActivePageId(newPage.id);
+  };
+
+  const renamePage = (pageId: string, newName: string) => {
+    setPages((prev) =>
+      prev.map((p) => (p.id === pageId ? { ...p, name: newName } : p))
+    );
   };
 
   const updatePageTasks = (pageId: string, newTasks: Task[]) => {
@@ -135,6 +142,7 @@ export function useTasksStore() {
     activePageId,
     setActivePageId,
     addPage,
+    renamePage,
     getActivePage,
     addTask,
     toggleTask,
