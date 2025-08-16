@@ -5,34 +5,38 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { GripVertical, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Reorder, useDragControls } from 'framer-motion';
+import { PointerEvent } from 'react';
 
 interface TaskItemProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
-  onDragStart: () => void;
-  onDragEnter: () => void;
-  onDragEnd: () => void;
 }
 
-export function TaskItem({
-  task,
-  onToggle,
-  onDelete,
-  onDragStart,
-  onDragEnter,
-  onDragEnd,
-}: TaskItemProps) {
+export function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
+  const dragControls = useDragControls();
+  
+  const startDrag = (event: PointerEvent) => {
+    dragControls.start(event);
+  };
+
   return (
-    <div
-      draggable
-      onDragStart={onDragStart}
-      onDragEnter={onDragEnter}
-      onDragEnd={onDragEnd}
-      onDragOver={(e) => e.preventDefault()}
-      className="group flex items-center gap-2 rounded-md bg-secondary p-2 transition-all duration-200 ease-in-out hover:bg-secondary/80"
+    <Reorder.Item
+      value={task}
+      id={task.id}
+      dragListener={false}
+      dragControls={dragControls}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
+      className="group flex items-center gap-2 rounded-md bg-secondary p-2 transition-all duration-200 ease-in-out hover:bg-secondary/80 will-change-transform"
     >
-      <div className="cursor-grab touch-none" onTouchStart={onDragStart}>
+      <div 
+        onPointerDown={startDrag} 
+        className="cursor-grab touch-none p-1"
+      >
         <GripVertical className="h-5 w-5 text-muted-foreground" />
       </div>
       <Checkbox
@@ -59,6 +63,6 @@ export function TaskItem({
         <Trash2 className="h-4 w-4 text-muted-foreground" />
         <span className="sr-only">Delete task</span>
       </Button>
-    </div>
+    </Reorder.Item>
   );
 }

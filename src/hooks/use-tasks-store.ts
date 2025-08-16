@@ -114,14 +114,8 @@ export function useTasksStore() {
     }
   };
 
-  const reorderTasks = (pageId: string, startIndex: number, endIndex: number) => {
-    const page = pages.find((p) => p.id === pageId);
-    if (page) {
-      const result = Array.from(page.tasks);
-      const [removed] = result.splice(startIndex, 1);
-      result.splice(endIndex, 0, removed);
-      updatePageTasks(pageId, result);
-    }
+  const reorderTasks = (pageId: string, reorderedTasks: Task[]) => {
+    updatePageTasks(pageId, reorderedTasks);
   };
 
   const addGeneratedTasks = (pageId: string, taskContents: string[]) => {
