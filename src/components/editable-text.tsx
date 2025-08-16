@@ -73,8 +73,7 @@ export function EditableText({ initialValue, onSave, className, isEditingInitial
         onBlur={handleBlur}
         className={cn(
             "h-auto p-0 m-0 border-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent",
-            "text-3xl font-semibold tracking-tight", // Ensure consistency
-            className,
+            className, // Inherit typography from parent
             inputClassName
         )}
       />
